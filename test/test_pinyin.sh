@@ -1,1 +1,1 @@
-python3 ../src/pinyin.py ../data/input.txt ../data/output.txt
+python3 ../src/word1/pinyin.py ../data/input.txt ../data/output.txt

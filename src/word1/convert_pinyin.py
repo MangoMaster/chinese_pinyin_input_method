@@ -41,13 +41,11 @@ def convert_pinyin(pinyin, pinyin_word_table):
     #         else:
     #             max_now = ["", 0]
     #         for slice_mid_length in range(1, slice_length):
-    #             count = dynamic_programming_table[start_index][slice_mid_length - 1][1] * \
-    #                 dynamic_programming_table[start_index +
-    #                                           slice_mid_length][slice_length - slice_mid_length - 1][1]
+    #             count = (dynamic_programming_table[start_index][slice_mid_length - 1][1] *
+    #                      dynamic_programming_table[start_index + slice_mid_length][slice_length - slice_mid_length - 1][1]) ** 0.5
     #             if count > max_now[1]:
-    #                 max_now = [dynamic_programming_table[start_index][slice_mid_length - 1][0] +
-    #                            dynamic_programming_table[start_index +
-    #                                                      slice_mid_length][slice_length-slice_mid_length-1][0],
+    #                 max_now = [(dynamic_programming_table[start_index][slice_mid_length - 1][0] +
+    #                             dynamic_programming_table[start_index + slice_mid_length][slice_length-slice_mid_length-1][0]),
     #                            count]
     #         assert max_now[0] != ""
     #         dynamic_programming_table[start_index].append(max_now)
