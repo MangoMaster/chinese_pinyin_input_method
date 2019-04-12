@@ -22,15 +22,14 @@ def build_table(database_path):
             select pinyin, word, count
             from PinyinWord
             """)
-        while True:
-            data_list = cursor.fetchmany()
-            if not data_list:
-                break
-            for (pinyin, word, count) in data_list:
-                if pinyin in pinyin_word_table:
-                    if count > pinyin_word_table[pinyin][1]:
-                        pinyin_word_table[pinyin] = (word, count)
-                else:
+        data_list = cursor.fetchall()
+        for (pinyin, word, count) in data_list:
+            if pinyin in pinyin_word_table:
+                if count > pinyin_word_table[pinyin][1]:
+                    pinyin_word_table[pinyin] = (word, count)
+            else:
+                # Add threshold to avoid wrongly cut words
+                if count > 100:
                     pinyin_word_table[pinyin] = (word, count)
     finally:
         cursor.close()
@@ -52,8 +51,8 @@ def check_table(pinyin_word_table):
         if not key in pinyin_word_table:
             pinyin_word_table[key] = (value, 1)
             print("Miss: " + key + " Set to: " + value)
-        else:
-            print(key, pinyin_word_table[key][0])
+        # else:
+        #     print(key, pinyin_word_table[key][0])
 
 
 def save_table(pinyin_word_table, pinyin_word_table_path):
