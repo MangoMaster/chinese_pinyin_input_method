@@ -33,6 +33,7 @@ def convert_pinyin(pinyin, pinyin_word_table):
     while pinyin_start < pinyin_stop:
         while pinyin[pinyin_start: pinyin_stop] not in pinyin_word_table:
             # Pop the last character's pinyin.
+            pinyin_stop -= 1
             while pinyin[pinyin_stop] != ' ':
                 pinyin_stop -= 1
                 # If all the possible pinyin of a single Chinese character
@@ -41,7 +42,7 @@ def convert_pinyin(pinyin, pinyin_word_table):
                     pinyin + '(' + str(pinyin_start) + \
                     ',' + str(pinyin_stop) + ')'
         # TODO: Optimize it by using a threshold
-        words.append(pinyin_word_table[pinyin[pinyin_start:pinyin_stop]])
+        words.append(pinyin_word_table[pinyin[pinyin_start:pinyin_stop]][0])
         # Pop (from the front) pinyin of the characters that are already in the sentence.
         pinyin_start = pinyin_stop + 1
         pinyin_stop = len(pinyin)
