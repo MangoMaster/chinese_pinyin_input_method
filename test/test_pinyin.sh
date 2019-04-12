@@ -1,0 +1,1 @@
+python3 ../src/pinyin.py ../data/input.txt ../data/output.txt
