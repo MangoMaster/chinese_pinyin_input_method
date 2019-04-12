@@ -12,7 +12,7 @@ if len(sys.argv) == 1:
     pinyin_word_table = load_table(pinyin_word_table_path)
     while True:
         pinyin = input("全拼拼音，每个音之间用空格隔开：")
-        pinyin = pinyin.strip()
+        pinyin = pinyin.strip().lower()
         sentence = convert_pinyin(pinyin, pinyin_word_table)
         print(sentence)
 elif len(sys.argv) == 3:
@@ -20,7 +20,7 @@ elif len(sys.argv) == 3:
     pinyin_word_table = load_table(pinyin_word_table_path)
     with open(sys.argv[1], 'r') as input_file, open(sys.argv[2], 'w') as output_file:
         for pinyin in input_file:
-            pinyin = pinyin.strip()
+            pinyin = pinyin.strip().lower()
             sentence = convert_pinyin(pinyin, pinyin_word_table)
             output_file.write(sentence)
             output_file.write('\n')
