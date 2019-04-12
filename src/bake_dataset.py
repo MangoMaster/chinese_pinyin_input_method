@@ -63,16 +63,16 @@ def get_pinyin(words):
     return pinyin_word_pairs
 
 
-def count_pinyin_words(pinyin_word_pairs, database_file):
+def count_pinyin_words(pinyin_word_pairs, database_path):
     """
     Count how many times pinyin-word pair happen.
 
     Args:
         pinyin_word_pairs: A list of pair (pinyin, word).
-        database_file: A sqlite database file.
+        database_path: Path to a sqlite database file.
     """
     try:
-        connection = sqlite3.connect(database_file, isolation_level=None)
+        connection = sqlite3.connect(database_path, isolation_level=None)
         cursor = connection.cursor()
         for pinyin, word in pinyin_word_pairs:
             pinyin = ' '.join(pinyin)
@@ -92,63 +92,18 @@ def count_pinyin_words(pinyin_word_pairs, database_file):
         connection.close()
 
 
-def create_database(database_file):
-    """
-    Create a database to database_file.
-
-    Args:
-        database_file: A sqlite database file.
-    """
-    try:
-        connection = sqlite3.connect(database_file)
-        cursor = connection.cursor()
-        cursor.execute("""
-            create table PinyinWord(
-                pinyin varchar(50) not null,
-                word varchar(10) not null,
-                count integer not null,
-                primary key(pinyin, word)
-            )""")
-        connection.commit()
-    finally:
-        cursor.close()
-        connection.close()
-
-
-def check_database(database_file):
-    """
-    Check the sqlite database is properly set.
-
-    Args:
-        database_file: A sqlite database file.
-    """
-    try:
-        connection = sqlite3.connect(database_file)
-        cursor = connection.cursor()
-        cursor.execute("""
-            select * from PinyinWord
-            """)
-        data = cursor.fetchall()
-        print(data, len(data))
-    finally:
-        cursor.close()
-        connection.close()
-
-
 """
 Convert sina news to pinyin-word counts
 """
 if __name__ == "__main__":
-    database_filename = "../data/counter.db"
-    # create_database(database_filename)
     import os
-    dirname = "../data/sina_news_utf8"
-    filenames = os.listdir(dirname)
-    for filename in filenames:
-        print("Reading " + filename)
-        with open(os.path.join(dirname, filename), 'r') as f:
+    news_dirname = "../data/sina_news_utf8"
+    news_filenames = os.listdir(news_dirname)
+    database_path = "../data/counter.db"
+    for news_filename in news_filenames:
+        print("Reading " + news_filename)
+        with open(os.path.join(news_dirname, news_filename), 'r') as f:
             news_texts = get_news_text(f)
             news_words = get_words(news_texts)
             news_pinyin_word_pairs = get_pinyin(news_words)
-            count_pinyin_words(news_pinyin_word_pairs, database_filename)
-    # check_database(database_filename)
+            count_pinyin_words(news_pinyin_word_pairs, database_path)
