@@ -1,12 +1,13 @@
+import os
 import sqlite3
 
 
 def create_database(database_path):
     """
-    Create a database to database_path.
+    Create a database with a table named PinyinWord to database_path.
 
     Args:
-        database_path: Path to a sqlite database file.
+        database_path: Path to the destination sqlite database file.
     """
     try:
         connection = sqlite3.connect(database_path)
@@ -48,6 +49,6 @@ def check_database(database_path):
 Create or check sqlite database.
 """
 if __name__ == "__main__":
-    database_path = "../data/counter.db"
+    database_path = os.path.join(os.path.pardir, "data", "counter.db")
     # create_database(database_path)
     check_database(database_path)

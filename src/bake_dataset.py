@@ -14,7 +14,8 @@ def get_news_text(news_file):
 
     Args:
         news_file: A file containing news.
-            Every line contains a piece of news in json, title:新闻标题 html:新闻正文.
+            Every line contains a piece of news in json
+            Json keys include: title-新闻标题 html-新闻正文.
 
     Returns:
         A list of texts in news.
@@ -67,7 +68,7 @@ def get_pinyin(words):
 
 def count_pinyin_words(pinyin_word_pairs, database_path):
     """
-    Count how many times pinyin-word pair happen.
+    Count how many times the same pinyin-word pair appears.
 
     Args:
         pinyin_word_pairs: A list of pair (pinyin, word).
@@ -103,9 +104,9 @@ def bake_dataset_pinyin_word():
     # 无自定义拼音库，控制pypinyin不做copy操作, 以减少内存占用
     os.environ['PYPINYIN_NO_DICT_COPY'] = 'true'
     # 设置文件和数据库路径
-    news_dirname = "../data/sina_news_utf8"
+    news_dirname = os.path.join(os.path.pardir, "data", "sina_news_utf8")
     news_filenames = os.listdir(news_dirname)
-    database_path = "../data/counter.db"
+    database_path = os.path.join(os.path.pardir, "data", "counter.db")
     for news_filename in news_filenames:
         with open(os.path.join(news_dirname, news_filename), 'r') as f:
             print("Reading " + news_filename + "...")

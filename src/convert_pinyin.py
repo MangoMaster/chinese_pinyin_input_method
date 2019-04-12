@@ -4,7 +4,7 @@ import json
 
 def load_table(pinyin_word_table_path):
     """
-    Load 
+    Load pinyin-word table from pinyin_word_table_path.
 
     Args:
         pinyin_word_table_path: Path to the source pinyin-word table json file.
@@ -22,7 +22,7 @@ def convert_pinyin(pinyin, pinyin_word_table):
 
     Args:
         pinyin: A string, a sentence of pinyin separated by space.
-        pinyin_word_table: pinyin-word table, a dict.
+        pinyin_word_table: pinyin-word table, a dict, key->pinyin, value->(word, count).
 
     Returns:
         A string of Chinese characters converted from pinyin.

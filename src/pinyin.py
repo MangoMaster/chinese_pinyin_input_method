@@ -3,8 +3,10 @@ import sys
 from convert_pinyin import load_table, convert_pinyin
 
 
+"""
+main() of the pinyin program.
+"""
 pinyin_word_table_path = "../data/pinyin_word_table.json"
-
 if len(sys.argv) == 1:
     # Interactive mode
     pinyin_word_table = load_table(pinyin_word_table_path)

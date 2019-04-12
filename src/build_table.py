@@ -1,24 +1,26 @@
-import sqlite3
 import json
+import os
+import sqlite3
 
 
 def build_table(database_path):
     """
-    Build pinyin-word table using database_path.
+    Build pinyin-word table using database from database_path.
         table: pinyin -> (most frenquent word, count).
 
     Args:
         database_path: Path to a sqlite database file.
 
     Returns:
-        pinyin-word table: A dict, key->pinyin, value->(word, count)
+        pinyin-word table: A dict, key->pinyin, value->(word, count).
     """
     pinyin_word_table = dict()
     try:
         connection = sqlite3.connect(database_path)
         cursor = connection.cursor()
         cursor.execute("""
-            select pinyin, word, count from PinyinWord
+            select pinyin, word, count
+            from PinyinWord
             """)
         while True:
             data_list = cursor.fetchmany()
@@ -41,8 +43,8 @@ def save_table(pinyin_word_table, pinyin_word_table_path):
     Save pinyin_word_table to pinyin_word_table_path.
 
     Args:
-        pinyin_word_table: A dict
-        pinyin_word_table_path: Path to the destination pinyin-word-table json file.
+        pinyin_word_table: A dict, key->pinyin, value->(word, count).
+        pinyin_word_table_path: Path to the destination pinyin-word table json file.
     """
     with open(pinyin_word_table_path) as f:
         json.dump(pinyin_word_table, f)
@@ -52,7 +54,8 @@ def save_table(pinyin_word_table, pinyin_word_table_path):
 Build and save pinyin-word table.
 """
 if __name__ == "__main__":
-    database_path = "../data/counter.db"
-    pinyin_word_table_path = "../data/pinyin_word_table.json"
+    database_path = os.path.join(os.path.pardir, "data", "counter.db")
+    pinyin_word_table_path = os.path.join(
+        os.path.pardir, "data", "pinyin_word_table.json")
     pinyin_word_table = build_table(database_path)
     save_table(pinyin_word_table, pinyin_word_table_path)
