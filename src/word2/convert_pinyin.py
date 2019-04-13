@@ -31,7 +31,7 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
     # Dynamic programming strategy.
     pinyin_list = pinyin.split(' ')
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
-    # dynamic_programming_table:
+    # dynamic_programming_table:二维数组，记录pinyin_list[start_index:stop_index+1]的最优解
     # 第一维为stop_index，第二维为(尾词，尾词probability，总句，总句probability)
     for stop_index in range(len(pinyin_list)):
         pinyin_whole = ' '.join(pinyin_list[:stop_index + 1])
@@ -46,7 +46,8 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
                 for word_back, word_probability_back in pinyin_word_table[pinyin_back]:
                     for word_front, word_probability_front, sentence_front, sentence_probability_front in dynamic_programming_table[mid_stop_index]:
                         if (word_front, word_back) in word_word_table:
-                            sentence_probability = sentence_probability_front * word_word_table[(word_front, word_back)] / word_probability_front
+                            sentence_probability = sentence_probability_front * word_word_table[(word_front, word_back)] \
+                                / word_probability_front
                         else:
                             sentence_probability = sentence_probability_front * word_probability_back
                         dynamic_programming_table[stop_index].append(

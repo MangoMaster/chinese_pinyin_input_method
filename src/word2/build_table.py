@@ -53,14 +53,14 @@ def build_table(pinyin_word_database_path, word_word_database_path):
         connection = sqlite3.connect(word_word_database_path)
         cursor = connection.cursor()
         cursor.execute("""
-            select pinyin1, pinyin2, word1, word2, count
+            select word1, word2, count
             from PinyinPinyinWordWord
             """)
         while True:
             data_list = cursor.fetchmany()
             if not data_list:
                 break
-            for (_, _, word1, word2, count) in data_list:
+            for (word1, word2, count) in data_list:
                 word_word_count += count
                 # Add threshold to avoid wrongly cut words and reduce number of words
                 if count > 100:
