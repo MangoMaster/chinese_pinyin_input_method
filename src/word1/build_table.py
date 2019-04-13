@@ -15,6 +15,7 @@ def build_table(database_path):
         pinyin-word table: A dict, key->pinyin, value->(word, count).
     """
     pinyin_word_table = dict()
+    pinyin_word_count = 0
     try:
         connection = sqlite3.connect(database_path)
         cursor = connection.cursor()
@@ -24,6 +25,7 @@ def build_table(database_path):
             """)
         data_list = cursor.fetchall()
         for (pinyin, word, count) in data_list:
+            pinyin_word_count += count
             if pinyin in pinyin_word_table:
                 if count > pinyin_word_table[pinyin][1]:
                     pinyin_word_table[pinyin] = (word, count)
@@ -31,6 +33,9 @@ def build_table(database_path):
                 # Add threshold to avoid wrongly cut words
                 if count > 100:
                     pinyin_word_table[pinyin] = (word, count)
+        # Change count to probability
+        for pinyin, (word, count) in pinyin_word_table.items():
+            pinyin_word_table[pinyin] = (word, count / pinyin_word_count)
     finally:
         cursor.close()
         connection.close()
