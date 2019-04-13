@@ -3,11 +3,11 @@ import os
 executable_file_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "src", "word2", "pinyin.py")
 input_file_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "input1.txt")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "input2.txt")
 output_file_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "output1.txt")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "output2.txt")
 std_output_file_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "std_output1.txt")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "output_std2.txt")
 return_value = os.system("python3 " + executable_file_path + " " +
                          input_file_path + " " + output_file_path)
 if return_value == 0:
