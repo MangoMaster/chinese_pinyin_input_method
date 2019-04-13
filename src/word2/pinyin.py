@@ -8,9 +8,9 @@ from convert_pinyin import load_table, convert_pinyin
 main() of the pinyin program.
 """
 pinyin_word_table_path = os.path.join(
-    os.path.pardir, os.path.pardir, "data", "word2_pinyin_word_table.json")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "word2_pinyin_word_table.json")
 word_word_table_path = os.path.join(
-    os.path.pardir, os.path.pardir, "data", "word2_word_word_table.json")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "word2_word_word_table.json")
 if len(sys.argv) == 1:
     # Interactive mode
     pinyin_word_table = load_table(pinyin_word_table_path)
@@ -27,7 +27,8 @@ elif len(sys.argv) == 3:
     with open(sys.argv[1], 'r') as input_file, open(sys.argv[2], 'w') as output_file:
         for pinyin in input_file:
             pinyin = pinyin.strip().lower()
-            sentence = convert_pinyin(pinyin, pinyin_word_table, word_word_table)
+            sentence = convert_pinyin(
+                pinyin, pinyin_word_table, word_word_table)
             output_file.write(sentence)
             output_file.write('\n')
 else:

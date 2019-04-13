@@ -113,13 +113,13 @@ Build and save pinyin-word table.
 """
 if __name__ == "__main__":
     pinyin_word_database_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "pinyin_word.db")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_word.db")
     pinyin_word_table_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "word2_pinyin_word_table.json")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "word2_pinyin_word_table.json")
     pinyin_pinyin_word_word_database_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "pinyin_pinyin_word_word.db")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_pinyin_word_word.db")
     word_word_table_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "word2_word_word_table.json")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "word2_word_word_table.json")
     pinyin_word_table, word_word_table = build_table(
         pinyin_word_database_path, pinyin_pinyin_word_word_database_path)
     check_table(pinyin_word_table)

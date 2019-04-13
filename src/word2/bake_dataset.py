@@ -122,10 +122,10 @@ def bake_dataset_pinyin_pinyin_word_word():
     os.environ['PYPINYIN_NO_DICT_COPY'] = 'true'
     # 设置文件和数据库路径
     news_dirname = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "sina_news_utf8")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "sina_news_utf8")
     news_filenames = os.listdir(news_dirname)
     database_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "pinyin_pinyin_word_word.db")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_pinyin_word_word.db")
     for news_filename in news_filenames:
         with open(os.path.join(news_dirname, news_filename), 'r') as f:
             print("Reading " + news_filename + "...")

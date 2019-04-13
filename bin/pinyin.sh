@@ -1,1 +1,1 @@
-python3 ../src/pinyin.py $1 $2
+python3 ../src/word1/pinyin.py $1 $2

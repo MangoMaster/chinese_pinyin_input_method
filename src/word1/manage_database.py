@@ -50,6 +50,6 @@ Create or check sqlite database.
 """
 if __name__ == "__main__":
     database_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "pinyin_word.db")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_word.db")
     # create_database(database_path)
     check_database(database_path)
