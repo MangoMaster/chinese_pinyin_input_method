@@ -10,7 +10,7 @@ def load_table(pinyin_word_table_path):
         pinyin_word_table_path: Path to the source pinyin-word table json file.
 
     Returns:
-        pinyin-word table, a dict, key->pinyin, value->(word, count).
+        pinyin-word table, a dict, key->pinyin, value->(word, log(probability)).
     """
     with open(pinyin_word_table_path, 'r') as f:
         return json.load(f)
@@ -22,15 +22,17 @@ def convert_pinyin(pinyin, pinyin_word_table):
 
     Args:
         pinyin: A string, a sentence of pinyin separated by space.
-        pinyin_word_table: pinyin-word table, a dict, key->pinyin, value->(word, count).
+        pinyin_word_table: pinyin-word table, a dict, key->pinyin, value->(word, log(probability)).
 
     Returns:
         A string of Chinese characters converted from pinyin.
     """
     # Dynamic programming strategy.
     pinyin_list = pinyin.split(' ')
+    if not pinyin_list:
+        return ""
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
-    # dynamic_programming_table: 二维数组，记录pinyin_list[start_index:stop_index+1]的最优解
+    # dynamic_programming_table: 二维数组，记录pinyin_list[:stop_index+1]的最优解
     # 第一维为stop_index，第二维为(整句, 整句probability)
     for stop_index in range(len(pinyin_list)):
         pinyin_whole = ' '.join(pinyin_list[:stop_index + 1])

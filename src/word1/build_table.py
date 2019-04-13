@@ -34,7 +34,8 @@ def build_table(database_path):
                 pinyin_word_table[pinyin] = (word, count)
         # Change count to log(probability)
         for pinyin, (word, count) in pinyin_word_table.items():
-            pinyin_word_table[pinyin] = (word, math.log10(count / pinyin_word_count))
+            pinyin_word_table[pinyin] = (
+                word, math.log10(count / pinyin_word_count))
     finally:
         cursor.close()
         connection.close()
@@ -46,7 +47,7 @@ def check_table(pinyin_word_table):
     Check pinyin_word_table to be properly set.
 
     Args:
-        pinyin_word_table: A dict, key->pinyin, value->(word, count).
+        pinyin_word_table: A dict, key->pinyin, value->(word, log(probability)).
     """
     # Make sure all the possible pinyin of a single Chinese character
     # is in pinyin_word_table.
@@ -54,7 +55,7 @@ def check_table(pinyin_word_table):
                               'nin': '您', 'han': '含', 'shao': '少', 'li': '里', 'pang': '旁', 'lou': '楼', 'shun': '顺', 'jian': '件', 'gun': '丨', 'ning': '宁', 'yang': '杨', 'zou': '走', 'hao': '好', 'chai': '拆', 'zai': '在', 'chen': '陈', 'zhei': '这', 'wang': '网', 'cha': '茶', 'yi': '以', 'tai': '太', 'zha': '扎', 'zhuang': '撞', 'gou': '狗', 'cheng': '称', 'guo': '过', 'niu': '牛', 'shei': '谁', 'chuo': '戳', 'di': '第', 'shuan': '拴', 'zuo': '做', 'le': '了', 'fan': '反', 'xiong': '熊', 'pai': '拍', 'a': '啊', 'qiong': '穷', 'diao': '掉', 'zhe': '这', 'chou': '抽', 'cen': '涔', 'tun': '屯', 'se': '色', 'en': '恩', 'tou': '头', 'zhua': '抓', 'sao': '扫', 'ying': '应', 'huang': '黄', 'chuai': '踹', 'qun': '群', 'yun': '云', 'rong': '蓉', 'ce': '侧', 're': '热', 'pei': '陪', 'nou': '耨', 'wu': '无', 'juan': '卷', 'yo': '哟', 'zi': '自', 'gao': '高', 'yan': '严', 'nong': '弄', 'mei': '没', 'ao': '奥', 'hen': '很', 'ri': '日', 'mie': '灭', 'ga': '伽', 'zei': '贼', 'de': '的', 'si': '四', 'zong': '总', 'bi': '比', 'niao': '鸟', 'ruan': '软', 'ju': '据', 'cong': '从', 'zhong': '中', 'zhao': '找', 'kuan': '款', 'mao': '猫', 'na': '那', 'dia': '嗲', 'san': '三', 'zao': '早', 'er': '而', 'rui': '睿', 'tong': '同', 'zun': '尊', 'kuai': '快', 'chang': '场', 'fen': '分', 'ping': '坪', 'cou': '凑', 'ta': '他', 'hai': '还', 'bian': '便', 'hou': '后', 'qia': '掐', 'hun': '混', 'die': '跌', 'gen': '跟', 'sheng': '省', 'zuan': '钻', 'dian': '点', 'yu': '与', 'bang': '帮', 'shi': '是', 'tang': '躺', 'ha': '哈', 'rang': '让', 'nei': '内', 'chu': '出', 'kua': '跨', 'pen': '喷', 'pie': '撇', 'wei': '为', 'shang': '上', 'tan': '谈', 'ke': '可', 'pin': '拼', 'nang': '囊', 'zhou': '周', 'ne': '呢', 'zhuo': '桌', 'hang': '杭', 'qi': '其', 'sang': '桑', 'reng': '仍', 'shou': '受', 'tu': '图', 'keng': '坑', 'suan': '算', 'jiong': '囧', 'nue': '虐', 'run': '润', 'jiang': '将', 'cu': '促', 'zang': '脏', 'ling': '另', 'kuo': '扩', 'liu': '刘', 'hui': '会', 'bao': '报', 'xun': '讯', 'kao': '靠', 'chong': '冲', 'min': '民', 'ceng': '曾', 'mian': '面', 'zan': '赞', 'seng': '僧', 'ca': '擦', 'sun': '孙', 'huan': '换', 'wan': '万', 'zhui': '追', 'xiang': '向', 'lia': '俩', 'tian': '天', 'o': '哦', 'shuo': '说', 'ni': '你', 'fa': '法', 'tui': '推', 'zhun': '准', 'qiu': '球', 'qin': '亲', 'yuan': '原', 'an': '按', 'yin': '因', 'xin': '新', 'mou': '某', 'xie': '写', 'tao': '套', 'fang': '房', 'tie': '贴', 'lian': '连', 'ran': '然', 'xiu': '秀', 'lin': '林', 'nao': '闹', 'xiao': '小', 'luo': '罗', 'mi': '米', 'rou': '肉', 'cao': '曹', 'shai': '晒', 'kang': '抗', 'xuan': '选', 'bei': '被', 'leng': '冷', 'lie': '列', 'lao': '老', 'xu': '需', 'gong': '共', 'pan': '潘', 'tei': '忒', 'e': '俄', 'bu': '不', 'za': '砸'}
     for key, value in pinyin_character_table.items():
         if not key in pinyin_word_table:
-            pinyin_word_table[key] = (value, 1)
+            pinyin_word_table[key] = (value, float("-inf"))
             print("Miss: " + key + " Set to: " + value)
         # else:
         #     print(key, pinyin_word_table[key][0])
@@ -65,7 +66,7 @@ def save_table(pinyin_word_table, pinyin_word_table_path):
     Save pinyin_word_table to pinyin_word_table_path.
 
     Args:
-        pinyin_word_table: A dict, key->pinyin, value->(word, count).
+        pinyin_word_table: A dict, key->pinyin, value->(word, log(probability)).
         pinyin_word_table_path: Path to the destination pinyin-word table json file.
     """
     with open(pinyin_word_table_path, 'w') as f:

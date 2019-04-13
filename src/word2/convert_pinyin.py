@@ -1,4 +1,3 @@
-import copy
 import json
 
 
@@ -30,8 +29,10 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
     """
     # Dynamic programming strategy.
     pinyin_list = pinyin.split(' ')
+    if not pinyin_list:
+        return ""
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
-    # dynamic_programming_table:二维数组，记录pinyin_list[start_index:stop_index+1]的最优解
+    # dynamic_programming_table:二维数组，记录pinyin_list[:stop_index+1]的所有可能尾词的分别最优解
     # 第一维为stop_index，第二维为list(尾词，尾词probability，总句，总句probability)
     for stop_index in range(len(pinyin_list)):
         pinyin_whole = ' '.join(pinyin_list[:stop_index + 1])
@@ -45,7 +46,8 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
             if pinyin_back in pinyin_word_table:
                 for word_back, word_probability_back in pinyin_word_table[pinyin_back]:
                     # Pushes one sentence for every word_back
-                    max_sentence = [word_back, word_probability_back, "", float("-inf")]
+                    max_sentence = [word_back,
+                                    word_probability_back, "", float("-inf")]
                     for word_front, word_probability_front, sentence_front, sentence_probability_front in dynamic_programming_table[mid_stop_index]:
                         word_pair = '-'.join((word_front, word_back))
                         # log(probability), so * => + , / => -
@@ -57,6 +59,7 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
                         if sentence_probability > max_sentence[3]:
                             max_sentence[2] = sentence_front + word_back
                             max_sentence[3] = sentence_probability
+                    assert max_sentence[2] != ""
                     dynamic_programming_table[stop_index].append(max_sentence)
     max_sentence = ("", float("-inf"))
     for dp_node in dynamic_programming_table[-1]:
