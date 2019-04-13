@@ -31,7 +31,7 @@ def build_table(database_path):
                     pinyin_word_table[pinyin] = (word, count)
             else:
                 # Add threshold to avoid wrongly cut words
-                if count > 100:
+                if count > 10:
                     pinyin_word_table[pinyin] = (word, count)
         # Change count to probability
         for pinyin, (word, count) in pinyin_word_table.items():

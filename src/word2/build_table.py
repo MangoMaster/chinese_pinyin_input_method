@@ -7,7 +7,7 @@ def build_table(pinyin_word_database_path, word_word_database_path):
     """
     Build pinyin-word table and word-word table using database from database_path.
         pinyin-word table: pinyin -> [[word, probability]] with count over a threshold.
-        word-word table: (word1, word2) -> probability with count over a threshold.
+        word-word table: str(word1-word2) -> probability with count over a threshold.
 
     Args:
         pinyin_word_database_path: Path to pinyin-word sqlite database file.
@@ -15,7 +15,7 @@ def build_table(pinyin_word_database_path, word_word_database_path):
 
     Returns:
         pinyin-word table: A dict, key->pinyin, value->[[word, probability]].
-        word-word table: A dict, key->(word1, word2), value->probability
+        word-word table: A dict, key->str(word1-word2), value->probability
     """
     pinyin_word_table = dict()
     pinyin_word_count = 0
@@ -34,15 +34,16 @@ def build_table(pinyin_word_database_path, word_word_database_path):
             for (pinyin, word, count) in data_list:
                 pinyin_word_count += count
                 # Add threshold to avoid wrongly cut words and reduce number of words
-                if count > 100:
+                if count > 10:
                     if pinyin in pinyin_word_table:
                         pinyin_word_table[pinyin].append([word, count])
                     else:
                         pinyin_word_table[pinyin] = [[word, count], ]
         # Change count to probability
-        for word_count_list in pinyin_word_table.values():
-            for word, count in word_count_list:
-                count = count / pinyin_word_count
+        for pinyin, word_list in pinyin_word_table.items():
+            word_list = [(word, count / pinyin_word_count)
+                         for word, count in word_list]
+            pinyin_word_table[pinyin] = word_list
     finally:
         cursor.close()
         connection.close()
@@ -63,15 +64,16 @@ def build_table(pinyin_word_database_path, word_word_database_path):
             for (word1, word2, count) in data_list:
                 word_word_count += count
                 # Add threshold to avoid wrongly cut words and reduce number of words
-                if count > 100:
-                    if (word1, word2) in word_word_table:
+                if count > 1:
+                    word_pair = '-'.join((word1, word2))
+                    if word_pair in word_word_table:
                         # 同词不同音，忽略
-                        word_word_table[(word1, word2)] += count
+                        word_word_table[word_pair] += count
                     else:
-                        word_word_table[(word1, word2)] = count
+                        word_word_table[word_pair] = count
         # Change count to probability
-        for count in word_word_table.values():
-            count = count / word_word_count
+        for word_word, count in word_word_table.items():
+            word_word_table[word_word] = count / word_word_count
     finally:
         cursor.close()
         connection.close()
