@@ -75,7 +75,7 @@ if __name__ == "__main__":
     database_path = os.path.join(
         os.path.pardir, os.path.pardir, "data", "pinyin_word.db")
     pinyin_word_table_path = os.path.join(
-        os.path.pardir, os.path.pardir, "data", "pinyin_word_table.json")
+        os.path.pardir, os.path.pardir, "data", "word1_pinyin_word_table.json")
     pinyin_word_table = build_table(database_path)
     check_table(pinyin_word_table)
     save_table(pinyin_word_table, pinyin_word_table_path)

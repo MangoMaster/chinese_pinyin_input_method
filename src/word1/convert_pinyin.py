@@ -30,26 +30,26 @@ def convert_pinyin(pinyin, pinyin_word_table):
     # # Dynamic programming strategy.
     # pinyin_list = pinyin.split(' ')
     # dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
-    # # dynamic_programming_table: 二维数组，记录pinyin_list[start_index:start_index+slice_length]的最优解
-    # # 第一维为start_index，第二维为slice_length-1
-    # for slice_length in range(1, len(pinyin_list) + 1):
-    #     for start_index in range(0, len(pinyin_list) + 1 - slice_length):
-    #         pinyin_now = ' '.join(
-    #             pinyin_list[start_index: start_index + slice_length])
-    #         if pinyin_now in pinyin_word_table:
-    #             max_now = pinyin_word_table[pinyin_now]
-    #         else:
-    #             max_now = ["", 0]
-    #         for slice_mid_length in range(1, slice_length):
-    #             count = (dynamic_programming_table[start_index][slice_mid_length - 1][1] *
-    #                      dynamic_programming_table[start_index + slice_mid_length][slice_length - slice_mid_length - 1][1]) ** 0.5
-    #             if count > max_now[1]:
-    #                 max_now = [(dynamic_programming_table[start_index][slice_mid_length - 1][0] +
-    #                             dynamic_programming_table[start_index + slice_mid_length][slice_length-slice_mid_length-1][0]),
-    #                            count]
-    #         assert max_now[0] != ""
-    #         dynamic_programming_table[start_index].append(max_now)
-    # return dynamic_programming_table[0][-1][0]
+    # # dynamic_programming_table: 二维数组，记录pinyin_list[start_index:stop_index+1]的最优解
+    # # 第一维为stop_index，第二维为(整句, 整句probability)
+    # for stop_index in range(len(pinyin_list)):
+    #     pinyin_whole = ' '.join(pinyin_list[:stop_index + 1])
+    #     if pinyin_whole in pinyin_word_table:
+    #         max_now = pinyin_word_table[pinyin_whole]
+    #     else:
+    #         max_now = ["", 0]
+    #     for mid_stop_index in range(stop_index):
+    #         pinyin_back = ' '.join(
+    #             pinyin_list[mid_stop_index + 1:stop_index + 1])
+    #         if pinyin_back in pinyin_word_table:
+    #             word, word_probability = pinyin_word_table[pinyin_back]
+    #             sentence, sentence_probability = dynamic_programming_table[mid_stop_index]
+    #             probability = word_probability * sentence_probability
+    #             if probability > max_now[1]:
+    #                 max_now = [sentence + word, probability]
+    #     assert max_now[0] != ""
+    #     dynamic_programming_table[stop_index] = max_now
+    # return dynamic_programming_table[-1][0]
     # Greedy stategy.
     words = []
     pinyin_start = 0
