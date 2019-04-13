@@ -22,8 +22,8 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
 
     Args:
         pinyin: A string, a sentence of pinyin separated by space.
-        pinyin_word_table: pinyin-word table, a dict, key->pinyin, value->[(word, probability)].
-        word_word_table: word-word table, a dict, key->str(word1-word2), value->probability
+        pinyin_word_table: pinyin-word table, a dict, key->pinyin, value->[[word, log(probability)].
+        word_word_table: word-word table, a dict, key->str(word1-word2), value->log(probability)
 
     Returns:
         A string of Chinese characters converted from pinyin.
@@ -45,21 +45,22 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
             if pinyin_back in pinyin_word_table:
                 for word_back, word_probability_back in pinyin_word_table[pinyin_back]:
                     # Pushes one sentence for every word_back
-                    max_sentence = [word_back, word_probability_back, "", 0]
+                    max_sentence = [word_back, word_probability_back, "", float("-inf")]
                     for word_front, word_probability_front, sentence_front, sentence_probability_front in dynamic_programming_table[mid_stop_index]:
                         word_pair = '-'.join((word_front, word_back))
+                        # log(probability), so * => + , / => -
                         if word_pair in word_word_table:
                             sentence_probability = (
-                                sentence_probability_front * word_word_table[word_pair] / word_probability_front)
+                                sentence_probability_front + word_word_table[word_pair] - word_probability_front)
                         else:
-                            sentence_probability = sentence_probability_front * word_probability_back
+                            sentence_probability = sentence_probability_front + word_probability_back
                         if sentence_probability > max_sentence[3]:
                             max_sentence[2] = sentence_front + word_back
                             max_sentence[3] = sentence_probability
                     dynamic_programming_table[stop_index].append(max_sentence)
-    max_sentence = ("", 0)
+    max_sentence = ("", float("-inf"))
     for dp_node in dynamic_programming_table[-1]:
         if dp_node[3] > max_sentence[1]:
             max_sentence = (dp_node[2], dp_node[3])
-    assert max_sentence[1] != 0
+    assert max_sentence[0] != ""
     return max_sentence[0]

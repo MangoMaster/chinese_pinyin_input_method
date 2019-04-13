@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import sqlite3
 
@@ -6,13 +7,13 @@ import sqlite3
 def build_table(database_path):
     """
     Build pinyin-word table using database from database_path.
-        table: pinyin -> (most frenquent word, count).
+        table: pinyin -> (most frenquent word, log(probability)).
 
     Args:
         database_path: Path to a sqlite database file.
 
     Returns:
-        pinyin-word table: A dict, key->pinyin, value->(word, count).
+        pinyin-word table: A dict, key->pinyin, value->(word, log(probability)).
     """
     pinyin_word_table = dict()
     pinyin_word_count = 0
@@ -30,12 +31,10 @@ def build_table(database_path):
                 if count > pinyin_word_table[pinyin][1]:
                     pinyin_word_table[pinyin] = (word, count)
             else:
-                # Add threshold to avoid wrongly cut words
-                if count > 10:
-                    pinyin_word_table[pinyin] = (word, count)
-        # Change count to probability
+                pinyin_word_table[pinyin] = (word, count)
+        # Change count to log(probability)
         for pinyin, (word, count) in pinyin_word_table.items():
-            pinyin_word_table[pinyin] = (word, count / pinyin_word_count)
+            pinyin_word_table[pinyin] = (word, math.log10(count / pinyin_word_count))
     finally:
         cursor.close()
         connection.close()

@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import sqlite3
 
@@ -6,16 +7,16 @@ import sqlite3
 def build_table(pinyin_word_database_path, word_word_database_path):
     """
     Build pinyin-word table and word-word table using database from database_path.
-        pinyin-word table: pinyin -> [[word, probability]] with count over a threshold.
-        word-word table: str(word1-word2) -> probability with count over a threshold.
+        pinyin-word table: pinyin -> [[word, log(probability)]] with count over a threshold.
+        word-word table: str(word1-word2) -> log(probability) with count over a threshold.
 
     Args:
         pinyin_word_database_path: Path to pinyin-word sqlite database file.
         word_word_database_path: Path to word-word sqlite database file.
 
     Returns:
-        pinyin-word table: A dict, key->pinyin, value->[[word, probability]].
-        word-word table: A dict, key->str(word1-word2), value->probability
+        pinyin-word table: A dict, key->pinyin, value->[[word, log(probability)]].
+        word-word table: A dict, key->str(word1-word2), value->log(probability)
     """
     pinyin_word_table = dict()
     pinyin_word_count = 0
@@ -37,9 +38,9 @@ def build_table(pinyin_word_database_path, word_word_database_path):
                     pinyin_word_table[pinyin].append([word, count])
                 else:
                     pinyin_word_table[pinyin] = [[word, count], ]
-        # Change count to probability
+        # Change count to log(probability)
         for pinyin, word_list in pinyin_word_table.items():
-            word_list = [(word, count / pinyin_word_count)
+            word_list = [(word, math.log10(count / pinyin_word_count))
                          for word, count in word_list]
             pinyin_word_table[pinyin] = word_list
     finally:
@@ -69,9 +70,9 @@ def build_table(pinyin_word_database_path, word_word_database_path):
                         word_word_table[word_pair] += count
                     else:
                         word_word_table[word_pair] = count
-        # Change count to probability
+        # Change count to log(probability)
         for word_word, count in word_word_table.items():
-            word_word_table[word_word] = count / word_word_count
+            word_word_table[word_word] = math.log10(count / word_word_count)
     finally:
         cursor.close()
         connection.close()

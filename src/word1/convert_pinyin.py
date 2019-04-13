@@ -37,14 +37,15 @@ def convert_pinyin(pinyin, pinyin_word_table):
         if pinyin_whole in pinyin_word_table:
             max_now = pinyin_word_table[pinyin_whole]
         else:
-            max_now = ["", 0]
+            max_now = ["", float("-inf")]
         for mid_stop_index in range(stop_index):
             pinyin_back = ' '.join(
                 pinyin_list[mid_stop_index + 1:stop_index + 1])
             if pinyin_back in pinyin_word_table:
                 word, word_probability = pinyin_word_table[pinyin_back]
                 sentence, sentence_probability = dynamic_programming_table[mid_stop_index]
-                probability = word_probability * sentence_probability
+                # log(probability), so * => +
+                probability = word_probability + sentence_probability
                 if probability > max_now[1]:
                     max_now = [sentence + word, probability]
         assert max_now[0] != ""
