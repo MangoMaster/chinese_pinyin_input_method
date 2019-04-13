@@ -32,7 +32,7 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
     pinyin_list = pinyin.split(' ')
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
     # dynamic_programming_table:二维数组，记录pinyin_list[start_index:stop_index+1]的最优解
-    # 第一维为stop_index，第二维为(尾词，尾词probability，总句，总句probability)
+    # 第一维为stop_index，第二维为list(尾词，尾词probability，总句，总句probability)
     for stop_index in range(len(pinyin_list)):
         pinyin_whole = ' '.join(pinyin_list[:stop_index + 1])
         if pinyin_whole in pinyin_word_table:
@@ -44,13 +44,22 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
                 pinyin_list[mid_stop_index + 1:stop_index + 1])
             if pinyin_back in pinyin_word_table:
                 for word_back, word_probability_back in pinyin_word_table[pinyin_back]:
+                    # Pushes one sentence for every word_back
+                    max_sentence = [word_back, word_probability_back, "", 0]
                     for word_front, word_probability_front, sentence_front, sentence_probability_front in dynamic_programming_table[mid_stop_index]:
                         word_pair = '-'.join((word_front, word_back))
                         if word_pair in word_word_table:
-                            sentence_probability = sentence_probability_front * word_word_table[word_pair] \
-                                / word_probability_front
+                            sentence_probability = (
+                                sentence_probability_front * word_word_table[word_pair] / word_probability_front)
                         else:
                             sentence_probability = sentence_probability_front * word_probability_back
-                        dynamic_programming_table[stop_index].append(
-                            [word_back, word_probability_back, sentence_front + word_back, sentence_probability])
-    return dynamic_programming_table[-1][-1][2]
+                        if sentence_probability > max_sentence[3]:
+                            max_sentence[2] = sentence_front + word_back
+                            max_sentence[3] = sentence_probability
+                    dynamic_programming_table[stop_index].append(max_sentence)
+    max_sentence = ("", 0)
+    for dp_node in dynamic_programming_table[-1]:
+        if dp_node[3] > max_sentence[1]:
+            max_sentence = (dp_node[2], dp_node[3])
+    assert max_sentence[1] != 0
+    return max_sentence[0]

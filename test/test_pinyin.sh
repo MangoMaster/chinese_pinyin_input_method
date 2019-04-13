@@ -1,1 +1,2 @@
-python3 ../src/word1/pinyin.py ../data/input.txt ../data/output.txt
+BASEDIRPATH=$(dirname $0)
+python3 $BASEDIRPATH/../src/word2/pinyin.py $BASEDIRPATH/../data/input.txt $BASEDIRPATH/../data/output.txt
