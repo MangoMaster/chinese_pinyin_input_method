@@ -13,7 +13,7 @@ if len(sys.argv) == 1:
     # Interactive mode
     pinyin_word_table = load_table(pinyin_word_table_path)
     while True:
-        pinyin = input("全拼拼音，每个音之间用空格隔开：")
+        pinyin = input("全拼拼音，音与音之间用空格隔开：")
         pinyin = pinyin.strip().lower()
         sentence = convert_pinyin(pinyin, pinyin_word_table)
         print(sentence)

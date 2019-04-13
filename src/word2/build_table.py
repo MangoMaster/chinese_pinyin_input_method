@@ -33,12 +33,10 @@ def build_table(pinyin_word_database_path, word_word_database_path):
                 break
             for (pinyin, word, count) in data_list:
                 pinyin_word_count += count
-                # Add threshold to avoid wrongly cut words and reduce number of words
-                if count > 10:
-                    if pinyin in pinyin_word_table:
-                        pinyin_word_table[pinyin].append([word, count])
-                    else:
-                        pinyin_word_table[pinyin] = [[word, count], ]
+                if pinyin in pinyin_word_table:
+                    pinyin_word_table[pinyin].append([word, count])
+                else:
+                    pinyin_word_table[pinyin] = [[word, count], ]
         # Change count to probability
         for pinyin, word_list in pinyin_word_table.items():
             word_list = [(word, count / pinyin_word_count)

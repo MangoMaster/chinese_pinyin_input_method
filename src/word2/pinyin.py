@@ -13,17 +13,21 @@ word_word_table_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "word2_word_word_table.json")
 if len(sys.argv) == 1:
     # Interactive mode
+    print("Initializing...")
     pinyin_word_table = load_table(pinyin_word_table_path)
     word_word_table = load_table(word_word_table_path)
+    print("Initialization finished.")
     while True:
-        pinyin = input("全拼拼音，每个音之间用空格隔开：")
+        pinyin = input("全拼拼音，音与音之间用空格隔开：")
         pinyin = pinyin.strip().lower()
         sentence = convert_pinyin(pinyin, pinyin_word_table, word_word_table)
         print(sentence)
 elif len(sys.argv) == 3:
     # File input-output mode
+    print("Initializing...")
     pinyin_word_table = load_table(pinyin_word_table_path)
     word_word_table = load_table(word_word_table_path)
+    print("Initialization finished.")
     with open(sys.argv[1], 'r') as input_file, open(sys.argv[2], 'w') as output_file:
         for pinyin in input_file:
             pinyin = pinyin.strip().lower()
