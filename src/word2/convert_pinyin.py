@@ -55,7 +55,8 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
                             sentence_probability = (
                                 sentence_probability_front + word_word_table[word_pair] - word_probability_front)
                         else:
-                            sentence_probability = sentence_probability_front + word_probability_back
+                            # Add a punishment to increase accuracy
+                            sentence_probability = sentence_probability_front + word_probability_back - 0.5
                         if sentence_probability > max_sentence[3]:
                             max_sentence[2] = sentence_front + word_back
                             max_sentence[3] = sentence_probability
