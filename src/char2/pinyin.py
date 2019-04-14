@@ -10,7 +10,7 @@ main() of the pinyin program.
 pinyin_char_table_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char2_pinyin_char_table.json")
 char_char_table_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char2_char_char_table.json")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char2_pinyin_pinyin_char_char_table.json")
 if len(sys.argv) == 1:
     # Interactive mode
     print("Initializing...")

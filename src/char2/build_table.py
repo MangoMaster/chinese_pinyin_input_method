@@ -6,17 +6,17 @@ import sqlite3
 
 def build_table(pinyin_char_database_path, pinyin_pinyin_char_char_database_path):
     """
-    Build pinyin-char table and char-char table using database from database_path.
+    Build pinyin-char table and pinyin-pinyin-char-char table using database from database_path.
         pinyin-char table: pinyin -> [[char, log(probability)]].
-        char-char table: str(char1-char2) -> log(probability).
+        pinyin-pinyin-char-char table: str(pinyin1-pinyin2-char1-char2) -> log(probability).
 
     Args:
         pinyin_char_database_path: Path to pinyin-char sqlite database file.
-        pinyin_pinyin_char_char_database_path: Path to pinyin-pinyin-char-char sqlite database file.
+        pinyin_pinyin_char_char_database_path: Path to pinyin-pinyin-pinyin-pinyin-char-char sqlite database file.
 
     Returns:
         pinyin-char table: A dict, key->pinyin, value->[[char, log(probability)]].
-        char-char table: A dict, key->str(char1-char2), value->log(probability).
+        pinyin-pinyin-char-char table: A dict, key->str(pinyin1-pinyin2-char1-char2), value->log(probability).
     """
     # Build pinyin-char table
     pinyin_char_table = dict()
@@ -57,36 +57,35 @@ def build_table(pinyin_char_database_path, pinyin_pinyin_char_char_database_path
                      for char, count in char_list]
         pinyin_char_table[pinyin] = char_list
 
-    # Build char-char table
-    char_char_table = dict()
-    char_char_count = 0
+    # Build pinyin-pinyin-char-char table
+    pinyin_pinyin_char_char_table = dict()
+    pinyin_pinyin_char_char_count = 0
     try:
         connection = sqlite3.connect(pinyin_pinyin_char_char_database_path)
         cursor = connection.cursor()
         cursor.execute("""
-            select char1, char2, count
+            select pinyin1, pinyin2, char1, char2, count
             from PinyinPinyinCharChar
             """)
         while True:
             data_list = cursor.fetchmany()
             if not data_list:
                 break
-            for (char1, char2, count) in data_list:
-                char_char_count += count
-                char_pair = '-'.join((char1, char2))
-                if char_pair in char_char_table:
-                    # 同词不同音，忽略
-                    char_char_table[char_pair] += count
-                else:
-                    char_char_table[char_pair] = count
+            for (pinyin1, pinyin2, char1, char2, count) in data_list:
+                pinyin_pinyin_char_char_count += count
+                pinyin_char_pair = '-'.join((pinyin1, pinyin2, char1, char2))
+                # pinyin_char_pair is database's primary key
+                assert pinyin_char_pair not in pinyin_pinyin_char_char_table
+                pinyin_pinyin_char_char_table[pinyin_char_pair] = count
     finally:
         cursor.close()
         connection.close()
     # Change count to log(probability)
-    for char_char, count in char_char_table.items():
-        char_char_table[char_char] = math.log10(count / char_char_count)
+    for pinyin_pinyin_char_char, count in pinyin_pinyin_char_char_table.items():
+        pinyin_pinyin_char_char_table[pinyin_pinyin_char_char] \
+            = math.log10(count / pinyin_pinyin_char_char_count)
 
-    return pinyin_char_table, char_char_table
+    return pinyin_char_table, pinyin_pinyin_char_char_table
 
 
 def save_table(table, table_path):
@@ -108,12 +107,12 @@ if __name__ == "__main__":
     pinyin_char_database_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_char.db")
     pinyin_char_table_path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_char_table.json")
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char2_pinyin_char_table.json")
     pinyin_pinyin_char_char_database_path = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "pinyin_pinyin_char_char.db")
     char_char_table_path = os.path.join(
-        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char_char_table.json")
-    pinyin_char_table, char_char_table = build_table(
+        os.path.dirname(os.path.realpath(__file__)), os.path.pardir, os.path.pardir, "data", "char2_pinyin_pinyin_char_char_table.json")
+    pinyin_char_table, pinyin_pinyin_char_char_table = build_table(
         pinyin_char_database_path, pinyin_pinyin_char_char_database_path)
     save_table(pinyin_char_table, pinyin_char_table_path)
-    save_table(char_char_table, char_char_table_path)
+    save_table(pinyin_pinyin_char_char_table, char_char_table_path)

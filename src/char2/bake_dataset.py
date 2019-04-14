@@ -66,6 +66,8 @@ def get_pinyin_chars(text):
         if re.match(chinese_words, word):
             pinyin = pypinyin.lazy_pinyin(
                 word, style=pypinyin.Style.NORMAL, errors='ignore')
+            if not pinyin or not word:
+                continue
             pinyin_char_pair_list = list(zip(pinyin, word))
             pinyin_char_pairs.extend(pinyin_char_pair_list)
             # Neighbor with old char
