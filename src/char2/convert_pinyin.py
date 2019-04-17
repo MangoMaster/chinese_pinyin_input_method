@@ -30,12 +30,13 @@ def convert_pinyin(pinyin, pinyin_char_table, pinyin_pinyin_char_char_table):
     """
     # Dynamic programming strategy.
     pinyin_list = pinyin.split(' ')
-    if not pinyin_list:
+    if not pinyin_list or pinyin_list == ['']:
         return ""
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
     # dynamic_programming_table:二维数组，记录pinyin_list[:stop_index+1]的最优解
     # 第一维为stop_index，第二维为list(总句，总句probability，尾字pinyin，尾字probability)
     pinyin_whole = pinyin_list[0]
+    assert pinyin_whole in pinyin_char_table
     for char_whole, char_probability_whole in pinyin_char_table[pinyin_whole]:
         dynamic_programming_table[0].append(
             [char_whole, char_probability_whole, pinyin_whole, char_probability_whole])

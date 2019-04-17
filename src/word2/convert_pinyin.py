@@ -29,7 +29,7 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
     """
     # Dynamic programming strategy.
     pinyin_list = pinyin.split(' ')
-    if not pinyin_list:
+    if not pinyin_list or pinyin_list == ['']:
         return ""
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
     # dynamic_programming_table:二维数组，记录pinyin_list[:stop_index+1]的所有可能尾词的分别最优解
