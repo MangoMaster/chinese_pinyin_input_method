@@ -31,6 +31,11 @@ def convert_pinyin(pinyin, pinyin_word_table, word_word_table):
     pinyin_list = pinyin.split(' ')
     if not pinyin_list or pinyin_list == ['']:
         return ""
+    # 'lue' should be 'lve' and 'nue' should be 'nve' in standard Chinese pinyin.
+    pinyin_list = ['lve' if pinyin_single == 'lue'
+                   else 'nve' if pinyin_single == 'nue'
+                   else pinyin_single
+                   for pinyin_single in pinyin_list]
     dynamic_programming_table = [[] for _ in range(len(pinyin_list))]
     # dynamic_programming_table:二维数组，记录pinyin_list[:stop_index+1]的所有可能尾词的分别最优解
     # 第一维为stop_index，第二维为list(尾词，尾词probability，总句，总句probability)
