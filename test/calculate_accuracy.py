@@ -1,7 +1,7 @@
 import os
 
 executable_file_path = os.path.join(
-    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "src", "char2", "pinyin.py")
+    os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "src", "word2", "pinyin.py")
 input_file_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)), os.path.pardir, "data", "input1.txt")
 output_file_path = os.path.join(
